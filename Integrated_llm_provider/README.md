@@ -1,15 +1,17 @@
 # integrate-llm-provider
 
-A Claude Code skill that integrates any LLM or embedding model provider into your codebase — automatically.
+A skill that integrates any LLM or embedding model provider into your codebase — automatically.
+
+Works across **Claude Code**, **OpenAI Codex**, **Gemini CLI**, **Cursor**, and any agent that supports the open Agent Skills standard.
 
 ## What it does
 
 1. **Asks you clarifying questions** — provider name, use case (chat/embeddings/both), model preference, framework
 2. **Detects your codebase** — language, AI framework, package manager, existing env files
-3. **Fetches documentation** — uses built-in knowledge for 11+ providers; falls back to live docs for unknown ones
-4. **Writes the integration** — client file, env vars, dependency updates, and a usage example
+3. **Fetches documentation** — looks up the official framework × provider docs live before writing any code
+4. **Writes the integration** — client file, env vars, dependency updates, and a runnable usage example
 
-## Supported Providers (built-in)
+## Supported Providers
 
 | Provider | Chat | Embeddings |
 |---|---|---|
@@ -37,7 +39,7 @@ A Claude Code skill that integrates any LLM or embedding model provider into you
 - Agno (formerly Phidata)
 - CrewAI
 
-For each framework, the skill looks up that **framework's own integration docs** for the chosen provider — not the provider's standalone docs. So LangChain + Azure uses LangChain's Azure page. Agno + Groq uses Agno's Groq page. The generated code matches exactly what the framework recommends.
+For each framework, the skill fetches that **framework's own integration docs** for the chosen provider — not the provider's standalone docs. So LangChain + Azure uses LangChain's Azure page. Agno + Groq uses Agno's Groq page. The generated code matches exactly what the framework recommends.
 
 ## Supported Languages
 
@@ -47,22 +49,33 @@ Python, TypeScript, JavaScript, Go
 
 ## Installation
 
-### Option A — Project-level (one project only)
+### One-liner (recommended) — works for Claude Code AND Codex
 
+```bash
+npx -y skills add your-username/integrate-llm-provider
+```
+
+This installs the skill globally so it's available in any project, on any supported agent.
+
+---
+
+### Manual install — Claude Code
+
+**Project-level (one project only):**
 ```bash
 mkdir -p .claude/skills
 cp integrate-llm-provider.md .claude/skills/
 ```
 
-### Option B — Global (available in all your projects)
+**Global (all projects):**
 
-**Mac/Linux:**
+Mac/Linux:
 ```bash
 mkdir -p ~/.claude/skills
 cp integrate-llm-provider.md ~/.claude/skills/
 ```
 
-**Windows (PowerShell):**
+Windows (PowerShell):
 ```powershell
 New-Item -ItemType Directory -Force "$env:USERPROFILE\.claude\skills"
 Copy-Item integrate-llm-provider.md "$env:USERPROFILE\.claude\skills\"
@@ -70,23 +83,52 @@ Copy-Item integrate-llm-provider.md "$env:USERPROFILE\.claude\skills\"
 
 ---
 
+### Manual install — OpenAI Codex
+
+**Project-level:**
+```bash
+mkdir -p .codex/skills/integrate-llm-provider
+cp integrate-llm-provider.md .codex/skills/integrate-llm-provider/SKILL.md
+```
+
+**Global:**
+
+Mac/Linux:
+```bash
+mkdir -p ~/.codex/skills/integrate-llm-provider
+cp integrate-llm-provider.md ~/.codex/skills/integrate-llm-provider/SKILL.md
+```
+
+Windows (PowerShell):
+```powershell
+New-Item -ItemType Directory -Force "$env:USERPROFILE\.codex\skills\integrate-llm-provider"
+Copy-Item integrate-llm-provider.md "$env:USERPROFILE\.codex\skills\integrate-llm-provider\SKILL.md"
+```
+
+---
+
 ## Usage
 
-In any Claude Code session, run:
-
+### In Claude Code
 ```
 /integrate-llm-provider
 ```
 
 Or with a provider name directly:
-
 ```
 /integrate-llm-provider OpenAI
 /integrate-llm-provider Ollama
 /integrate-llm-provider Mistral
 ```
 
-Claude will ask you a few quick questions and then write the integration for you.
+### In OpenAI Codex CLI / IDE
+
+Type `/skills` or `$` to mention a skill, then select `integrate-llm-provider`.
+
+Or just describe what you want — Codex auto-selects the skill when the task matches:
+```
+integrate OpenAI into this project using LangChain
+```
 
 ---
 
@@ -95,7 +137,7 @@ Claude will ask you a few quick questions and then write the integration for you
 ```
 User: /integrate-llm-provider
 
-Claude: Before I start, I have a few quick questions:
+Claude/Codex: Before I start, I have a few quick questions:
 
   1. Which provider do you want to integrate?
   2. What do you need — chat, embeddings, or both?
@@ -105,13 +147,13 @@ Claude: Before I start, I have a few quick questions:
 
 User: Groq, chat only, llama-3.3-70b-versatile, raw SDK, yes
 
-Claude: I detected:
+Agent: Detected:
   - Language: Python
   - Framework: raw SDK
   - Package manager: pip
   - Existing env file: .env.example
 
-  Run this to install the SDK:
+  Run this to install:
     pip install groq
 
   Created: src/llm_client.py
@@ -140,6 +182,18 @@ your-project/
 
 ---
 
+## Why This Skill Exists
+
+Integrating an LLM provider sounds simple but has many sharp edges:
+- Every framework has its own class names, constructor args, and import paths
+- Provider docs and framework docs often diverge
+- Env var naming conventions vary per project
+- Package names differ from what you'd guess (`langchain-openai`, not `langchain`)
+
+This skill solves that by always fetching the **framework's own docs for that provider** before writing a single line of code.
+
+---
+
 ## Contributing / Customizing
 
 The entire skill is defined in `integrate-llm-provider.md`. To add a new framework or provider:
@@ -165,7 +219,21 @@ Also add the framework's import detection pattern to Step 2b.
 
 ---
 
+## Platform Compatibility
+
+This skill follows the [open Agent Skills standard](https://github.com/VoltAgent/awesome-agent-skills), which means the same `SKILL.md` file works across:
+
+| Platform | Supported |
+|---|---|
+| Claude Code | ✅ |
+| OpenAI Codex (CLI + IDE + App) | ✅ |
+| Gemini CLI | ✅ |
+| Cursor | ✅ |
+| OpenCode | ✅ |
+
+---
+
 ## Requirements
 
-- [Claude Code](https://claude.ai/code) CLI installed
-- Claude Code version that supports skills (`.claude/skills/` directory)
+- Any agent that supports the Agent Skills standard (Claude Code, Codex, Gemini CLI, etc.)
+- An API key for the provider you want to integrate (or Ollama running locally)
