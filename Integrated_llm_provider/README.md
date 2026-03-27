@@ -2,7 +2,7 @@
 
 A skill that integrates any LLM or embedding model provider into your codebase — automatically.
 
-Works across **Claude Code**, **OpenAI Codex**, **Gemini CLI**, **Cursor**, and any agent that supports the open Agent Skills standard.
+Works across **Claude Code**, **OpenAI Codex**, **OpenClaw**, **Gemini CLI**, **Cursor**, and any agent that supports the open Agent Skills standard.
 
 ## What it does
 
@@ -49,7 +49,7 @@ Python, TypeScript, JavaScript, Go
 
 ## Installation
 
-### One-liner (recommended) — works for Claude Code AND Codex
+### One-liner (recommended) — works for Claude Code, Codex, and OpenClaw
 
 ```bash
 npx -y skills add Shiv1909/Skills
@@ -107,6 +107,30 @@ Copy-Item integrate-llm-provider.md "$env:USERPROFILE\.codex\skills\integrate-ll
 
 ---
 
+### Manual install — OpenClaw
+
+**Project-level:**
+```bash
+mkdir -p .openclaw/skills/integrate-llm-provider
+cp integrate-llm-provider.md .openclaw/skills/integrate-llm-provider/SKILL.md
+```
+
+**Global:**
+
+Mac/Linux:
+```bash
+mkdir -p ~/.openclaw/skills/integrate-llm-provider
+cp integrate-llm-provider.md ~/.openclaw/skills/integrate-llm-provider/SKILL.md
+```
+
+Windows (PowerShell):
+```powershell
+New-Item -ItemType Directory -Force "$env:USERPROFILE\.openclaw\skills\integrate-llm-provider"
+Copy-Item integrate-llm-provider.md "$env:USERPROFILE\.openclaw\skills\integrate-llm-provider\SKILL.md"
+```
+
+---
+
 ## Usage
 
 ### In Claude Code
@@ -130,6 +154,14 @@ Or just describe what you want — Codex auto-selects the skill when the task ma
 integrate OpenAI into this project using LangChain
 ```
 
+### In OpenClaw
+
+Type `$integrate-llm-provider` to invoke directly, or just describe the task and OpenClaw will auto-select the skill:
+```
+add Groq to this Python project
+integrate Azure OpenAI with LangChain
+```
+
 ---
 
 ## Example Session
@@ -137,7 +169,7 @@ integrate OpenAI into this project using LangChain
 ```
 User: /integrate-llm-provider
 
-Claude/Codex: Before I start, I have a few quick questions:
+Agent: Before I start, I have a few quick questions:
 
   1. Which provider do you want to integrate?
   2. What do you need — chat, embeddings, or both?
@@ -194,6 +226,21 @@ This skill solves that by always fetching the **framework's own docs for that pr
 
 ---
 
+## Platform Compatibility
+
+This skill follows the [open Agent Skills standard](https://github.com/VoltAgent/awesome-agent-skills), which means the same `SKILL.md` file works across:
+
+| Platform | Supported |
+|---|---|
+| Claude Code | ✅ |
+| OpenAI Codex (CLI + IDE + App) | ✅ |
+| OpenClaw 🦞 | ✅ |
+| Gemini CLI | ✅ |
+| Cursor | ✅ |
+| OpenCode | ✅ |
+
+---
+
 ## Contributing / Customizing
 
 The entire skill is defined in `integrate-llm-provider.md`. To add a new framework or provider:
@@ -219,21 +266,7 @@ Also add the framework's import detection pattern to Step 2b.
 
 ---
 
-## Platform Compatibility
-
-This skill follows the [open Agent Skills standard](https://github.com/VoltAgent/awesome-agent-skills), which means the same `SKILL.md` file works across:
-
-| Platform | Supported |
-|---|---|
-| Claude Code | ✅ |
-| OpenAI Codex (CLI + IDE + App) | ✅ |
-| Gemini CLI | ✅ |
-| Cursor | ✅ |
-| OpenCode | ✅ |
-
----
-
 ## Requirements
 
-- Any agent that supports the Agent Skills standard (Claude Code, Codex, Gemini CLI, etc.)
+- Any agent that supports the Agent Skills standard (Claude Code, Codex, OpenClaw, Gemini CLI, etc.)
 - An API key for the provider you want to integrate (or Ollama running locally)
