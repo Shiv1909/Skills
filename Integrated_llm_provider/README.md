@@ -52,7 +52,7 @@ Python, TypeScript, JavaScript, Go
 ### One-liner (recommended) — works for Claude Code AND Codex
 
 ```bash
-npx -y skills add your-username/integrate-llm-provider
+npx -y skills add Shiv1909/Skills
 ```
 
 This installs the skill globally so it's available in any project, on any supported agent.
